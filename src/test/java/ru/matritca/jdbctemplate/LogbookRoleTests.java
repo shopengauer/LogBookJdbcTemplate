@@ -10,7 +10,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import ru.matritca.jdbctemplate.domain.LogbookUserRole;
+import ru.matritca.jdbctemplate.domain.users.LogbookUserRole;
 import ru.matritca.jdbctemplate.repository.logbookuserrole.LogbookUserRoleDao;
 
 import java.util.List;

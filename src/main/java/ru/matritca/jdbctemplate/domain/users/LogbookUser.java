@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.domain;
+package ru.matritca.jdbctemplate.domain.users;
 
 import java.io.Serializable;
 

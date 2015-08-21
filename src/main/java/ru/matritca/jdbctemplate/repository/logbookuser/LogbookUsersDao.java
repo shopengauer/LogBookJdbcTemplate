@@ -1,7 +1,6 @@
 package ru.matritca.jdbctemplate.repository.logbookuser;
 
-import org.springframework.stereotype.Repository;
-import ru.matritca.jdbctemplate.domain.LogbookUser;
+import ru.matritca.jdbctemplate.domain.users.LogbookUser;
 
 /**
  * Created by Василий on 16.08.2015.

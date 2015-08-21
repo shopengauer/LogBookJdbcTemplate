@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import ru.matritca.jdbctemplate.domain.Department;
+import ru.matritca.jdbctemplate.domain.users.Department;
 import ru.matritca.jdbctemplate.repository.department.DepartmentDao;
 
 import java.util.ArrayList;

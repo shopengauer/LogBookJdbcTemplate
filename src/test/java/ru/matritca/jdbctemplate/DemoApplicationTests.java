@@ -6,12 +6,10 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import ru.matritca.jdbctemplate.domain.Jobtitle;
-import ru.matritca.jdbctemplate.domain.LogbookUserRoleEnum;
+import ru.matritca.jdbctemplate.domain.users.LogbookUserRoleEnum;
 import ru.matritca.jdbctemplate.repository.jobtitle.JobtitleDao;
 import ru.matritca.jdbctemplate.repository.logbookuser.LogbookUsersDao;
 

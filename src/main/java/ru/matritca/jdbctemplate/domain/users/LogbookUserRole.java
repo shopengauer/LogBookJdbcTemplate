@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.domain;
+package ru.matritca.jdbctemplate.domain.users;
 
 /**
  * Created by Vasiliy on 18.08.2015.

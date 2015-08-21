@@ -1,6 +1,6 @@
 package ru.matritca.jdbctemplate.repository.department;
 
-import ru.matritca.jdbctemplate.domain.Department;
+import ru.matritca.jdbctemplate.domain.users.Department;
 
 import java.util.List;
 

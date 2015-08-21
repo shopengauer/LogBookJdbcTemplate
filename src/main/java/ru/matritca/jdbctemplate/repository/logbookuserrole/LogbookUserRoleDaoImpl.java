@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.matritca.jdbctemplate.domain.LogbookUserRole;
+import ru.matritca.jdbctemplate.domain.users.LogbookUserRole;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

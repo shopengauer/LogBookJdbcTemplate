@@ -3,10 +3,8 @@ package ru.matritca.jdbctemplate.repository.department;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.*;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.matritca.jdbctemplate.domain.Department;
+import ru.matritca.jdbctemplate.domain.users.Department;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

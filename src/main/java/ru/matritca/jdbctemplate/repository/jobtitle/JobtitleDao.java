@@ -1,7 +1,6 @@
 package ru.matritca.jdbctemplate.repository.jobtitle;
 
-import ru.matritca.jdbctemplate.domain.Department;
-import ru.matritca.jdbctemplate.domain.Jobtitle;
+import ru.matritca.jdbctemplate.domain.users.Jobtitle;
 
 import java.util.List;
 
