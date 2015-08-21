@@ -3,6 +3,7 @@ package ru.matritca.jdbctemplate.config;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -15,10 +16,22 @@ import javax.sql.DataSource;
 @Configuration
 public class DatasourcesConfig {
 
+//    @Profile(value = "h2remote")
+//    @Bean
+//    public DataSource dataSource(){
+//        BasicDataSource ds = new BasicDataSource();
+//        ds.setUrl("jdbc:h2:tcp://localhost/~/test/1");
+//        ds.setDriverClassName("org.h2.Driver");
+//        ds.setUsername("sa");
+//        ds.setPassword("");
+//        return ds;
+//    }
+
+   // @Profile(value = "h2embedded")
     @Bean
     public DataSource dataSource(){
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:h2:~/h2databases/logbook");
+        ds.setUrl("jdbc:h2:~/h2databases/logbook3");
         ds.setDriverClassName("org.h2.Driver");
         ds.setUsername("sa");
         ds.setPassword("");

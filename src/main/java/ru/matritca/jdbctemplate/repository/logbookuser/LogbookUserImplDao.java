@@ -1,8 +1,7 @@
-package ru.matritca.jdbctemplate.repository;
+package ru.matritca.jdbctemplate.repository.logbookuser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.matritca.jdbctemplate.domain.LogbookUser;
@@ -11,10 +10,11 @@ import ru.matritca.jdbctemplate.domain.LogbookUser;
  * Created by Василий on 16.08.2015.
  */
 @Repository
-public class LogbookUserImpl implements LogbookUsers
+public class LogbookUserImplDao implements LogbookUsersDao
 {
-      private static final String curval = "select currval('logbook_seq')";
-      private static final String nextval = "select nextval('logbook_seq')";
+      private static final String curval = "select currval('USERS_SEQUENCE')";
+      private static final String nextval = "select nextval('USERS_SEQUENCE')";
+
 
     @Autowired
     private JdbcOperations jdbcOperations;
@@ -22,6 +22,12 @@ public class LogbookUserImpl implements LogbookUsers
     @Override
     public long create(LogbookUser logbookUser) {
         return 0;
+    }
+
+
+    @Override
+    public void createSequence(String seqName) {
+
     }
 
     @Override
