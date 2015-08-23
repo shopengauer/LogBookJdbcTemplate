@@ -31,7 +31,7 @@ public class DatasourcesConfig {
     @Bean
     public DataSource dataSource(){
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:h2:~/h2databases/logbook3");
+        ds.setUrl("jdbc:h2:~/h2databases/logbook");
         ds.setDriverClassName("org.h2.Driver");
         ds.setUsername("sa");
         ds.setPassword("");

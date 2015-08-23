@@ -11,7 +11,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import ru.matritca.jdbctemplate.domain.users.LogbookUserRole;
-import ru.matritca.jdbctemplate.repository.users.logbookuserrole.LogbookUserRoleDao;
+import ru.matritca.jdbctemplate.repository.users.logbookuserrole.JdbcLogbookUserRoleDictDao;
 
 import java.util.List;
 
@@ -26,51 +26,7 @@ public class LogbookRoleTests {
     private Logger logger = LoggerFactory.getLogger(LogbookRoleTests.class);
 
     @Autowired
-    private LogbookUserRoleDao logbookUserRoleDao;
-
-    @Test
-    public void insertLogbookUserRole() throws Exception {
-
-        LogbookUserRole logbookUserRole = new LogbookUserRole();
-        logbookUserRole.setLogbookUserRoleName("Комиссия");
-        logbookUserRole.setLogbookUserRoleDesc("Член комиссии");
-        logbookUserRoleDao.create(logbookUserRole);
-
-        LogbookUserRole logbookUserRoleFind = logbookUserRoleDao.findOneByLogbookUserRoleName("Комиссия");
-        System.out.println(logbookUserRoleFind);
-       // Assert.assertEquals(logbookUserRole.getId(), logbookUserRoleFind.getId());
-        Assert.assertEquals(logbookUserRole.getLogbookUserRoleName(), logbookUserRoleFind.getLogbookUserRoleName());
-        Assert.assertEquals(logbookUserRole.getLogbookUserRoleDesc(), logbookUserRoleFind.getLogbookUserRoleDesc());
-
-    }
+    private JdbcLogbookUserRoleDictDao logbookUserRoleDao;
 
 
-    @Test(expected = DuplicateKeyException.class)
-    public void reinsertSameLogbookUserRole() throws Exception {
-
-        LogbookUserRole logbookUserRole = new LogbookUserRole();
-        logbookUserRole.setLogbookUserRoleName("Ответственное лицо");
-        logbookUserRole.setLogbookUserRoleDesc("Ответственное лицо за приемку системы");
-        logbookUserRoleDao.create(logbookUserRole);
-        logbookUserRoleDao.create(logbookUserRole);
-
-    }
-
-    @Test
-    public void addNameLogbookUserRoleList() throws Exception {
-
-    }
-
-    @Test
-    public void selectLogbookUserRoleList() throws Exception {
-
-       List<LogbookUserRole> logbookUserRoles = logbookUserRoleDao.findAllLogbookUserRole();
-
-        for (LogbookUserRole logbookUserRole : logbookUserRoles) {
-            logger.info("Id: {}",logbookUserRole.getId());
-            logger.info("Name: {}",logbookUserRole.getLogbookUserRoleName());
-            logger.info("Desc: {}",logbookUserRole.getLogbookUserRoleDesc());
-        }
-
-    }
 }

@@ -11,11 +11,11 @@ public interface JobtitleDao {
 
     int addJobtitle(Jobtitle jobtitle);
     int[] addListOfJobtitle(List<Jobtitle> jobtitleList);
-    Jobtitle findJobtitleByName(String JobtitleName);
+    Jobtitle findJobtitleByName(String jobtitleName);
     Jobtitle findJobtitleById(long id);
     List<Jobtitle> findAllJobtitles();
     int deleteJobtitleByJobtitleName(String jobtitleName);
-    int findJobtitleIdByJobtitleName(String jobtitleName);
-
+    long findJobtitleIdByJobtitleName(String jobtitleName);
+    void deleteAllDepartments();
 
 }

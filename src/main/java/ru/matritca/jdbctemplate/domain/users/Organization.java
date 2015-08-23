@@ -9,6 +9,9 @@ public class Organization {
     private String organizationName;
     private String organizationDescription;
 
+    public Organization() {
+    }
+
     public Organization(String organizationName) {
         this.organizationName = organizationName;
     }

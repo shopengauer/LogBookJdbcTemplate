@@ -83,9 +83,8 @@ public class JdbcDepartmentDao implements DepartmentDao {
     }
 
     @Override
-    public int deleteAllDepartments() {
+    public void deleteAllDepartments() {
         String sql = "delete from users.department";
         namedParameterJdbcTemplate.getJdbcOperations().execute(sql);
-        return 0;
-    }
+      }
 }
