@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.logbookuser;
+package ru.matritca.jdbctemplate.repository.users.logbookuser;
 
 import ru.matritca.jdbctemplate.domain.users.LogbookUser;
 

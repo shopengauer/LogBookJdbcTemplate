@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.jobtitle;
+package ru.matritca.jdbctemplate.repository.users.jobtitle;
 
 import ru.matritca.jdbctemplate.domain.users.Jobtitle;
 

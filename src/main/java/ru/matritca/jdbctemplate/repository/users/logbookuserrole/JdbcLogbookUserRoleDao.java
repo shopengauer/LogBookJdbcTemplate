@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.logbookuserrole;
+package ru.matritca.jdbctemplate.repository.users.logbookuserrole;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,9 @@ import java.util.List;
  * Created by Vasiliy on 18.08.2015.
  */
 @Repository
-public class LogbookUserRoleDaoImpl implements LogbookUserRoleDao {
+public class JdbcLogbookUserRoleDao implements LogbookUserRoleDao {
 
-    private Logger logger = LoggerFactory.getLogger(LogbookUserRoleDaoImpl.class);
+    private Logger logger = LoggerFactory.getLogger(JdbcLogbookUserRoleDao.class);
 
     @Autowired
     private JdbcOperations jdbcTemplate;

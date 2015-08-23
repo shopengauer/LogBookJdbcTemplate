@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.logbookuser;
+package ru.matritca.jdbctemplate.repository.users.logbookuser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -10,7 +10,7 @@ import ru.matritca.jdbctemplate.domain.users.LogbookUser;
  * Created by Василий on 16.08.2015.
  */
 @Repository
-public class LogbookUserImplDao implements LogbookUsersDao
+public class JdbcLogbookUserDao implements LogbookUsersDao
 {
       private static final String curval = "select currval('USERS_SEQUENCE')";
       private static final String nextval = "select nextval('USERS_SEQUENCE')";

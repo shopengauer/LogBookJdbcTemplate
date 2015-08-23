@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.logbookuserrole;
+package ru.matritca.jdbctemplate.repository.users.logbookuserrole;
 
 import ru.matritca.jdbctemplate.domain.users.LogbookUserRole;
 

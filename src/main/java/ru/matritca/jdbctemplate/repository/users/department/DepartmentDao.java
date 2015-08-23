@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.department;
+package ru.matritca.jdbctemplate.repository.users.department;
 
 import ru.matritca.jdbctemplate.domain.users.Department;
 
@@ -16,5 +16,5 @@ public interface DepartmentDao {
     List<Department> findAllDepartments();
     int deleteDepartmentByDepartmentName(String departmentName);
     int findDepartmentIdByDepartmentName(String departmentName);
-
+    int deleteAllDepartments();
 }

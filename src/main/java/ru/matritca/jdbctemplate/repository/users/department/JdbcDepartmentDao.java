@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.department;
+package ru.matritca.jdbctemplate.repository.users.department;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -42,14 +42,14 @@ public class JdbcDepartmentDao implements DepartmentDao {
     public Department findDepartmentByName(String departmentName) {
         String sql = "SELECT * FROM USERS.DEPARTMENT WHERE DEPARTMENT_NAME=:departmentName";
         SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
-        return namedParameterJdbcTemplate.queryForObject(sql,parameterSource,new DepartmentMapper());
+        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, new DepartmentMapper());
     }
 
     @Override
     public Department findDepartmentById(long id) {
         String sql = "SELECT * FROM USERS.DEPARTMENT WHERE DEPARTMENT_ID = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id",id);
-        return namedParameterJdbcTemplate.queryForObject(sql,parameterSource,new DepartmentMapper());
+        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, new DepartmentMapper());
     }
 
 
@@ -57,20 +57,20 @@ public class JdbcDepartmentDao implements DepartmentDao {
     public int[] addListOfDepartment(final List<Department> departmentList) {
         String sql = "insert into USERS.DEPARTMENT (DEPARTMENT_ID,DEPARTMENT_NAME) values (NEXTVAL('USERS_SEQUENCE'),:departmentName)";
         SqlParameterSource[] parameterSource = SqlParameterSourceUtils.createBatch(departmentList.toArray());
-        return namedParameterJdbcTemplate.batchUpdate(sql,parameterSource);
+        return namedParameterJdbcTemplate.batchUpdate(sql, parameterSource);
     }
 
     @Override
     public List<Department> findAllDepartments() {
         String sql = "select * from USERS.DEPARTMENT";
-        return namedParameterJdbcTemplate.query(sql,new DepartmentMapper());
+        return namedParameterJdbcTemplate.query(sql, new DepartmentMapper());
     }
 
     @Override
     public int deleteDepartmentByDepartmentName(String departmentName) {
         String sql = "DELETE FROM USERS.DEPARTMENT WHERE DEPARTMENT_NAME = :departmentName";
         SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
-        return namedParameterJdbcTemplate.update(sql,parameterSource);
+        return namedParameterJdbcTemplate.update(sql, parameterSource);
     }
 
 
@@ -80,5 +80,12 @@ public class JdbcDepartmentDao implements DepartmentDao {
         SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
         namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
         return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
+    }
+
+    @Override
+    public int deleteAllDepartments() {
+        String sql = "delete from users.department";
+        namedParameterJdbcTemplate.getJdbcOperations().execute(sql);
+        return 0;
     }
 }

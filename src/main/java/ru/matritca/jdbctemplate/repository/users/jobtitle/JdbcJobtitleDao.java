@@ -1,4 +1,4 @@
-package ru.matritca.jdbctemplate.repository.jobtitle;
+package ru.matritca.jdbctemplate.repository.users.jobtitle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
