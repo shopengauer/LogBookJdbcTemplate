@@ -9,6 +9,18 @@ public class LogbookUserRole {
     private String logbookUserRoleName;
     private String logbookUserRoleDesc;
 
+    public LogbookUserRole() {
+    }
+
+    public LogbookUserRole(String logbookUserRoleName) {
+        this.logbookUserRoleName = logbookUserRoleName;
+    }
+
+    public LogbookUserRole(String logbookUserRoleName, String logbookUserRoleDesc) {
+        this.logbookUserRoleName = logbookUserRoleName;
+        this.logbookUserRoleDesc = logbookUserRoleDesc;
+    }
+
     public long getId() {
         return id;
     }

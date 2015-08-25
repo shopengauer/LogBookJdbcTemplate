@@ -13,9 +13,10 @@ public class LogbookUser implements Serializable,Comparable<LogbookUser>{
      private String firstname;
      private String password;
      private String role;
-     private long organizationId;
-     private long departmentId;
-     private long jobtitleId;
+     private String organizationName;
+     private String departmentName;
+     private String jobtitleName;
+     private byte[] certificate;
 
     public long getId() {
         return id;
@@ -65,28 +66,28 @@ public class LogbookUser implements Serializable,Comparable<LogbookUser>{
         this.role = role;
     }
 
-    public long getOrganizationId() {
-        return organizationId;
+    public String getOrganizationName() {
+        return organizationName;
     }
 
-    public void setOrganizationId(long organizationId) {
-        this.organizationId = organizationId;
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
     }
 
-    public long getDepartmentId() {
-        return departmentId;
+    public String getDepartmentName() {
+        return departmentName;
     }
 
-    public void setDepartmentId(long departmentId) {
-        this.departmentId = departmentId;
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
-    public long getJobtitleId() {
-        return jobtitleId;
+    public String getJobtitleName() {
+        return jobtitleName;
     }
 
-    public void setJobtitleId(long jobtitleId) {
-        this.jobtitleId = jobtitleId;
+    public void setJobtitleName(String jobtitleName) {
+        this.jobtitleName = jobtitleName;
     }
 
     @Override

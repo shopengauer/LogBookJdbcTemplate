@@ -16,6 +16,6 @@ public interface JobtitleDao {
     List<Jobtitle> findAllJobtitles();
     int deleteJobtitleByJobtitleName(String jobtitleName);
     long findJobtitleIdByJobtitleName(String jobtitleName);
-    void deleteAllDepartments();
+    void deleteAllJobtitles();
 
 }

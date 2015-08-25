@@ -45,7 +45,7 @@ public class JdbcJobtitleDao implements JobtitleDao {
     @Override
     public int[] addListOfJobtitle(List<Jobtitle> jobtitleList) {
 
-        String sql = "INSERT INTO USERS.JOBTITLE (JOBTITLE_ID,JOBTITLE_NAME) VALUES (NEXTVAL('USERS_SEQUENCE'),:jobTitleName)";
+        String sql = "INSERT INTO USERS.JOBTITLE (JOBTITLE_ID,JOBTITLE_NAME) VALUES (NEXTVAL('USERS_SEQUENCE'),:jobtitleName)";
         SqlParameterSource[] parameterSource = SqlParameterSourceUtils.createBatch(jobtitleList.toArray());
         return namedParameterJdbcTemplate.batchUpdate(sql,parameterSource);
     }
@@ -87,7 +87,7 @@ public class JdbcJobtitleDao implements JobtitleDao {
 
 
     @Override
-    public void deleteAllDepartments() {
+    public void deleteAllJobtitles() {
         String sql = "delete from users.jobtitle";
         namedParameterJdbcTemplate.getJdbcOperations().execute(sql);
 

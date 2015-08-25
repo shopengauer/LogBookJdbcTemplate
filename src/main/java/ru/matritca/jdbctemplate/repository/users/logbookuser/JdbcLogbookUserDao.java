@@ -9,7 +9,7 @@ import ru.matritca.jdbctemplate.domain.users.LogbookUser;
 /**
  * Created by Василий on 16.08.2015.
  */
-@Repository
+@Repository// todo JdbcLogbookUserDao
 public class JdbcLogbookUserDao implements LogbookUsersDao
 {
       private static final String curval = "select currval('USERS_SEQUENCE')";
