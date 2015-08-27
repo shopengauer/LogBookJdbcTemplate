@@ -92,7 +92,7 @@ public class JdbcLogbookUserRoleDictDao implements LogbookUserRoleDictDao {
 
     @Override
     public void deleteAllLogbookUserRoles() {
-        String sql = "delete USERS.LOGBOOK_USER_ROLE_DICTIONARY";
+        String sql = "delete from USERS.LOGBOOK_USER_ROLE_DICTIONARY";
         namedParameterJdbcTemplate.getJdbcOperations().execute(sql);
     }
 }

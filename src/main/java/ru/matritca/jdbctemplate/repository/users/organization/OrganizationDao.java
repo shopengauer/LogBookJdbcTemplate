@@ -18,5 +18,6 @@ public interface OrganizationDao {
     int deleteOrganizationByOrganizationName(String organizationName);
     long findOrganizationIdByOrganizationName(String organizationName);
     void deleteAllOrganizations();
+    void updateOrganization(Organization newOrganization);
 
 }

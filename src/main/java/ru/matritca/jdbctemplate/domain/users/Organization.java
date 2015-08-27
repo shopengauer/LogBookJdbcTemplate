@@ -7,13 +7,18 @@ public class Organization {
 
     private long id;
     private String organizationName;
-    private String organizationDescription;
+    private String organizationDesc;
 
     public Organization() {
     }
 
     public Organization(String organizationName) {
         this.organizationName = organizationName;
+    }
+
+    public Organization(String organizationName, String organizationDescription) {
+        this.organizationName = organizationName;
+        this.organizationDesc = organizationDescription;
     }
 
     public long getId() {
@@ -32,11 +37,23 @@ public class Organization {
         this.organizationName = organizationName;
     }
 
-    public String getOrganizationDescription() {
-        return organizationDescription;
+    public String getOrganizationDesc() {
+        return organizationDesc;
     }
 
-    public void setOrganizationDescription(String organizationDescription) {
-        this.organizationDescription = organizationDescription;
+    public void setOrganizationDesc(String organizationDesc) {
+        this.organizationDesc = organizationDesc;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if ((obj != null) && (obj instanceof Organization)) {
+            Organization target = (Organization)obj;
+            isEqual = target.getOrganizationName().equals(this.getOrganizationName());
+        }
+        return isEqual;
+
+    }
+
 }

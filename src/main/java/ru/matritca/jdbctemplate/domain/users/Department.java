@@ -30,4 +30,21 @@ public class Department {
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if ((obj != null) && (obj instanceof Department)) {
+            Department target = (Department)obj;
+            isEqual = target.getDepartmentName().equals(this.getDepartmentName());
+        }
+        return isEqual;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

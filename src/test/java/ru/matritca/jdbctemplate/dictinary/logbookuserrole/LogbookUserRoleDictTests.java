@@ -1,5 +1,6 @@
-package ru.matritca.jdbctemplate;
+package ru.matritca.jdbctemplate.dictinary.logbookuserrole;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import ru.matritca.jdbctemplate.domain.users.Jobtitle;
+import ru.matritca.jdbctemplate.DemoApplication;
 import ru.matritca.jdbctemplate.domain.users.LogbookUserRole;
-import ru.matritca.jdbctemplate.repository.users.logbookuserrole.JdbcLogbookUserRoleDictDao;
 import ru.matritca.jdbctemplate.repository.users.logbookuserrole.LogbookUserRoleDictDao;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DemoApplication.class)
 @WebAppConfiguration
-public class LogbookUserRoleDictTests { //todo
+public class LogbookUserRoleDictTests {
 
     private Logger logger = LoggerFactory.getLogger(LogbookUserRoleDictTests.class);
 
@@ -62,11 +62,13 @@ public class LogbookUserRoleDictTests { //todo
 
     }
 
-    @Test(expected = DuplicateKeyException.class)
+    @Test
     public void logbookUserRoleInsertTest() throws Exception {
 
         Assert.assertNotNull(logbookUserRoleDictDao);
 
+        logbookUserRoleDictDao.deleteAllLogbookUserRoles();
+        Assert.assertTrue(logbookUserRoleDictDao.findAllLogbookUserRoles().isEmpty());
 
         // Check that job titles does not equals null
         Assert.assertNotNull(logbookUserRoleForInsert1);
@@ -83,6 +85,15 @@ public class LogbookUserRoleDictTests { //todo
         // Assert that selected job titles had equals inserted job titles
         Assert.assertEquals(logbookUserRoleForInsert1.getLogbookUserRoleName(), findLogbookUserRoleByName1.getLogbookUserRoleName());
         Assert.assertEquals(logbookUserRoleForInsert2.getLogbookUserRoleName(), findLogbookUserRoleByName2.getLogbookUserRoleName());
+        Assert.assertEquals(logbookUserRoleForInsert1.getLogbookUserRoleDesc(), findLogbookUserRoleByName1.getLogbookUserRoleDesc());
+        Assert.assertEquals(logbookUserRoleForInsert2.getLogbookUserRoleDesc(), findLogbookUserRoleByName2.getLogbookUserRoleDesc());
+
+        long logbookUserRoleId1 = logbookUserRoleDictDao.findLogbookUserRoleIdByLogbookUserRoleName(logbookUserRoleForInsert1.getLogbookUserRoleName());
+        long logbookUserRoleId2 = logbookUserRoleDictDao.findLogbookUserRoleIdByLogbookUserRoleName(logbookUserRoleForInsert2.getLogbookUserRoleName());
+        Assert.assertEquals(logbookUserRoleForInsert1.getLogbookUserRoleName(),logbookUserRoleDictDao.findLogbookUserRoleById(logbookUserRoleId1).getLogbookUserRoleName());
+        Assert.assertEquals(logbookUserRoleForInsert2.getLogbookUserRoleName(),logbookUserRoleDictDao.findLogbookUserRoleById(logbookUserRoleId2).getLogbookUserRoleName());
+
+
 
         // Delete this job title
         logbookUserRoleDictDao.deleteLogbookUserRoleByLogbookUserRoleName(logbookUserRoleForInsert1.getLogbookUserRoleName());
@@ -102,15 +113,17 @@ public class LogbookUserRoleDictTests { //todo
         List<LogbookUserRole> findEmptytList = logbookUserRoleDictDao.findAllLogbookUserRoles();
         Assert.assertTrue(findEmptytList.isEmpty());
 
-        // Try to insert duplicate entry
-        logbookUserRoleDictDao.addLogbookUserRole(new LogbookUserRole("Тестовая роль","Тестовое описание"));
-        logbookUserRoleDictDao.addLogbookUserRole(new LogbookUserRole("Тестовая роль"));
 
 
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testInsertNullJobtitleName() throws Exception {
+
+        Assert.assertNotNull(logbookUserRoleDictDao);
+        logbookUserRoleDictDao.deleteAllLogbookUserRoles();
+        Assert.assertTrue(logbookUserRoleDictDao.findAllLogbookUserRoles().isEmpty());
+
         // Try to insert NULL jobtitle
        LogbookUserRole insertlogbookUserRole = new LogbookUserRole(null,"Тестовое описание");
         logbookUserRoleDictDao.addLogbookUserRole(insertlogbookUserRole);
@@ -120,13 +133,35 @@ public class LogbookUserRoleDictTests { //todo
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testInsertJobtitleNameMuchChar() throws Exception {
+
+        Assert.assertNotNull(logbookUserRoleDictDao);
+        logbookUserRoleDictDao.deleteAllLogbookUserRoles();
+        Assert.assertTrue(logbookUserRoleDictDao.findAllLogbookUserRoles().isEmpty());
+
         // Try to insert department with length of departmentName over 60 chars
         logbookUserRoleDictDao.addLogbookUserRole(new LogbookUserRole("1234567890asdfghjkl;'" +
                 "zxcvbnm,./.,mnbvcxz';lkjhgfdsa][poiuytrewq" +
                 "0987654321"));
     }
 
+    @Test(expected = DuplicateKeyException.class)
+    public void testDuplicateEntry() throws Exception {
+        Assert.assertNotNull(logbookUserRoleDictDao);
+        logbookUserRoleDictDao.deleteAllLogbookUserRoles();
+        Assert.assertTrue(logbookUserRoleDictDao.findAllLogbookUserRoles().isEmpty());
+
+        // Try to insert duplicate entry
+        logbookUserRoleDictDao.addLogbookUserRole(new LogbookUserRole("Тестовая роль", "Тестовое описание"));
+        logbookUserRoleDictDao.addLogbookUserRole(new LogbookUserRole("Тестовая роль"));
 
 
+    }
 
+    @After
+    public void tearDown() throws Exception {
+        Assert.assertNotNull(logbookUserRoleDictDao);
+        logbookUserRoleDictDao.deleteAllLogbookUserRoles();
+        Assert.assertTrue(logbookUserRoleDictDao.findAllLogbookUserRoles().isEmpty());
+
+    }
 }

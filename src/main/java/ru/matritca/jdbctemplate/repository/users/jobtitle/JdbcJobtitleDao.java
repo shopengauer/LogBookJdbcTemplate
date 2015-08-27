@@ -81,7 +81,6 @@ public class JdbcJobtitleDao implements JobtitleDao {
     public long findJobtitleIdByJobtitleName(String jobtitleName) {
         String sql = "select jobtitle_id from users.jobtitle where jobtitle_name = :jobtitleName";
         SqlParameterSource parameterSource = new MapSqlParameterSource("jobtitleName",jobtitleName);
-        namedParameterJdbcTemplate.queryForObject(sql,parameterSource,new JobtitleMapper());
         return namedParameterJdbcTemplate.queryForObject(sql,parameterSource,Long.class);
     }
 

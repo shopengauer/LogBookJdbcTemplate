@@ -46,8 +46,8 @@ public class DemoApplicationTests {
 	@Test
 	public void sequenceTest() {
 
-		long currval = logbookUser.getCurrVal();
-		logger.warn("Current sequence value {}", currval);
+//		long currval = logbookUser.getCurrVal();
+//		logger.warn("Current sequence value {}", currval);
 		// long nextval = logbookUser.getNextVal();
 
 		//logger.warn("Next sequence value {}",nextval);

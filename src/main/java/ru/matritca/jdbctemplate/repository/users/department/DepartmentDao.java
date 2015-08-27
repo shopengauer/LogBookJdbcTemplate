@@ -15,6 +15,6 @@ public interface DepartmentDao {
     Department findDepartmentById(long id);
     List<Department> findAllDepartments();
     int deleteDepartmentByDepartmentName(String departmentName);
-    int findDepartmentIdByDepartmentName(String departmentName);
+    long findDepartmentIdByDepartmentName(String departmentName);
     void deleteAllDepartments();
 }

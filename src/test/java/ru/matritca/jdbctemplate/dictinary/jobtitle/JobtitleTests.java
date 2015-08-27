@@ -1,5 +1,6 @@
-package ru.matritca.jdbctemplate;
+package ru.matritca.jdbctemplate.dictinary.jobtitle;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import ru.matritca.jdbctemplate.domain.users.Department;
+import ru.matritca.jdbctemplate.DemoApplication;
 import ru.matritca.jdbctemplate.domain.users.Jobtitle;
-import ru.matritca.jdbctemplate.repository.users.jobtitle.JdbcJobtitleDao;
 import ru.matritca.jdbctemplate.repository.users.jobtitle.JobtitleDao;
 
 import java.util.ArrayList;
@@ -57,17 +57,18 @@ public class JobtitleTests {
 
     }
 
-    @Test(expected = DuplicateKeyException.class)
+    @Test
     public void jobtitleInsertTest() throws Exception {
 
         Assert.assertNotNull(jdbcJobtitleDao);
-
+        jdbcJobtitleDao.deleteAllJobtitles();
+        Assert.assertTrue(jdbcJobtitleDao.findAllJobtitles().isEmpty());
 
         // Check that job titles does not equals null
         Assert.assertNotNull(jobtitleForInsert1);
         Assert.assertNotNull(jobtitleForInsert2);
 
-        // Insert departments to database
+        // Insert job titles to database
         jdbcJobtitleDao.addJobtitle(jobtitleForInsert1);
         jdbcJobtitleDao.addJobtitle(jobtitleForInsert2);
 
@@ -76,8 +77,13 @@ public class JobtitleTests {
         Jobtitle findJobtitleByName2 = jdbcJobtitleDao.findJobtitleByName(jobtitleForInsert2.getJobtitleName());
 
         // Assert that selected job titles had equals inserted job titles
-        Assert.assertEquals(jobtitleForInsert1.getJobtitleName(), findJobtitleByName1.getJobtitleName());
-        Assert.assertEquals(jobtitleForInsert2.getJobtitleName(), findJobtitleByName2.getJobtitleName());
+        Assert.assertEquals(jobtitleForInsert1, findJobtitleByName1);
+        Assert.assertEquals(jobtitleForInsert2, findJobtitleByName2);
+
+        long jobtitleId1 = jdbcJobtitleDao.findJobtitleIdByJobtitleName(jobtitleForInsert1.getJobtitleName());
+        long jobtitleId2 = jdbcJobtitleDao.findJobtitleIdByJobtitleName(jobtitleForInsert2.getJobtitleName());
+        Assert.assertEquals(jobtitleForInsert1,jdbcJobtitleDao.findJobtitleById(jobtitleId1));
+        Assert.assertEquals(jobtitleForInsert2,jdbcJobtitleDao.findJobtitleById(jobtitleId2));
 
         // Delete this job title
         jdbcJobtitleDao.deleteJobtitleByJobtitleName(jobtitleForInsert1.getJobtitleName());
@@ -87,7 +93,7 @@ public class JobtitleTests {
         List<Jobtitle> jobtitleList = jdbcJobtitleDao.findAllJobtitles();
         Assert.assertEquals(0, jobtitleList.size());
 
-        // Insert list of job titles and check that 10 departments were inserted
+        // Insert list of job titles and check that 10 job titles were inserted
         jdbcJobtitleDao.addListOfJobtitle(insertJobtitleList);
         List<Jobtitle> findJobtitleList = jdbcJobtitleDao.findAllJobtitles();
         Assert.assertEquals(10, findJobtitleList.size());
@@ -97,15 +103,15 @@ public class JobtitleTests {
         List<Jobtitle> findEmptytList = jdbcJobtitleDao.findAllJobtitles();
         Assert.assertTrue(findEmptytList.isEmpty());
 
-        // Try to insert duplicate entry
-        jdbcJobtitleDao.addJobtitle(new Jobtitle("Заведующий складом"));
-        jdbcJobtitleDao.addJobtitle(new Jobtitle("Заведующий складом"));
-
 
     }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testInsertNullJobtitleName() throws Exception {
+        Assert.assertNotNull(jdbcJobtitleDao);
+        jdbcJobtitleDao.deleteAllJobtitles();
+        Assert.assertTrue(jdbcJobtitleDao.findAllJobtitles().isEmpty());
+
         // Try to insert NULL jobtitle
         Jobtitle insertJobtitle = new Jobtitle(null);
         jdbcJobtitleDao.addJobtitle(insertJobtitle);
@@ -115,10 +121,37 @@ public class JobtitleTests {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testInsertJobtitleNameMuchChar() throws Exception {
+
+        Assert.assertNotNull(jdbcJobtitleDao);
+        jdbcJobtitleDao.deleteAllJobtitles();
+        Assert.assertTrue(jdbcJobtitleDao.findAllJobtitles().isEmpty());
         // Try to insert department with length of departmentName over 60 chars
         jdbcJobtitleDao.addJobtitle(new Jobtitle("1234567890asdfghjkl;'" +
                 "zxcvbnm,./.,mnbvcxz';lkjhgfdsa][poiuytrewq" +
                 "0987654321"));
     }
 
+
+    @Test(expected = DuplicateKeyException.class)
+    public void testDuplicateEntry() throws Exception {
+        Assert.assertNotNull(jdbcJobtitleDao);
+        jdbcJobtitleDao.deleteAllJobtitles();
+        Assert.assertTrue(jdbcJobtitleDao.findAllJobtitles().isEmpty());
+
+        // Try to insert duplicate entry
+        jdbcJobtitleDao.addJobtitle(new Jobtitle("Заведующий складом"));
+        jdbcJobtitleDao.addJobtitle(new Jobtitle("Заведующий складом"));
+
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        Assert.assertNotNull(jdbcJobtitleDao);
+        jdbcJobtitleDao.deleteAllJobtitles();
+        Assert.assertTrue(jdbcJobtitleDao.findAllJobtitles().isEmpty());
+
+    }
 }
+
+
+

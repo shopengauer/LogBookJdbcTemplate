@@ -44,4 +44,15 @@ public class LogbookUserRole {
     public void setLogbookUserRoleDesc(String logbookUserRoleDesc) {
         this.logbookUserRoleDesc = logbookUserRoleDesc;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if ((obj != null) && (obj instanceof LogbookUserRole)) {
+            LogbookUserRole target = (LogbookUserRole)obj;
+            isEqual = target.getLogbookUserRoleName().equals(this.getLogbookUserRoleName());
+        }
+        return isEqual;
+
+    }
 }

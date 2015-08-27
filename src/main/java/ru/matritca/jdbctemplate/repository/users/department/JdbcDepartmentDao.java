@@ -55,14 +55,14 @@ public class JdbcDepartmentDao implements DepartmentDao {
 
     @Override
     public int[] addListOfDepartment(final List<Department> departmentList) {
-        String sql = "insert into USERS.DEPARTMENT (DEPARTMENT_ID,DEPARTMENT_NAME) values (NEXTVAL('USERS_SEQUENCE'),:departmentName)";
+        String sql = "INSERT INTO USERS.DEPARTMENT (DEPARTMENT_ID,DEPARTMENT_NAME) values (NEXTVAL('USERS_SEQUENCE'),:departmentName)";
         SqlParameterSource[] parameterSource = SqlParameterSourceUtils.createBatch(departmentList.toArray());
         return namedParameterJdbcTemplate.batchUpdate(sql, parameterSource);
     }
 
     @Override
     public List<Department> findAllDepartments() {
-        String sql = "select * from USERS.DEPARTMENT";
+        String sql = "SELECT * FROM USERS.DEPARTMENT";
         return namedParameterJdbcTemplate.query(sql, new DepartmentMapper());
     }
 
@@ -75,8 +75,8 @@ public class JdbcDepartmentDao implements DepartmentDao {
 
 
     @Override
-    public int findDepartmentIdByDepartmentName(String departmentName) {
-        String sql = "select department_id from users.department where department_name = :departmentName";
+    public long findDepartmentIdByDepartmentName(String departmentName) {
+        String sql = "SELECT department_id FROM users.department WHERE department_name = :departmentName";
         SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
         namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
         return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
@@ -84,7 +84,7 @@ public class JdbcDepartmentDao implements DepartmentDao {
 
     @Override
     public void deleteAllDepartments() {
-        String sql = "delete from users.department";
+        String sql = "DELETE FROM users.department";
         namedParameterJdbcTemplate.getJdbcOperations().execute(sql);
       }
 }

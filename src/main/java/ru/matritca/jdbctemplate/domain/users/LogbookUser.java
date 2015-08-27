@@ -1,6 +1,8 @@
 package ru.matritca.jdbctemplate.domain.users;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Василий on 16.08.2015.
@@ -9,14 +11,50 @@ public class LogbookUser implements Serializable,Comparable<LogbookUser>{
 
      private long id;
      private String username;
-     private String lastname;
      private String firstname;
+     private String lastname;
      private String password;
-     private String role;
+     private List<String> roles;
+     private byte[] certificate;
      private String organizationName;
      private String departmentName;
      private String jobtitleName;
-     private byte[] certificate;
+
+
+
+    public LogbookUser() {
+
+    }
+
+    public LogbookUser(String username, String lastname, String firstname, List<String> roles) {
+        this.username = username;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.roles = roles;
+    }
+
+    public LogbookUser(String username, String lastname, String firstname, List<String> roles,String organizationName, String departmentName, String jobtitleName) {
+        this.username = username;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.roles = roles;
+    }
+
+    public LogbookUser(String username, String lastname, String firstname, String password, List<String> roles) {
+        this(username,lastname,firstname,roles);
+        this.password = password;
+
+    }
+
+    public LogbookUser(String username, String lastname, String firstname, String password, List<String> roles, String organizationName, String departmentName, String jobtitleName) {
+        this(username,lastname,firstname,password,roles);
+        this.organizationName = organizationName;
+        this.departmentName = departmentName;
+        this.jobtitleName = jobtitleName;
+    }
+
+
+
 
     public long getId() {
         return id;
@@ -58,12 +96,12 @@ public class LogbookUser implements Serializable,Comparable<LogbookUser>{
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public String getOrganizationName() {
@@ -90,14 +128,36 @@ public class LogbookUser implements Serializable,Comparable<LogbookUser>{
         this.jobtitleName = jobtitleName;
     }
 
+    public byte[] getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(byte[] certificate) {
+        this.certificate = certificate;
+    }
+
     @Override
     public int compareTo(LogbookUser o) {
         return 0;
     }
 
+
+
+
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+
+        boolean isEqual = false;
+        if ((obj != null) && (obj instanceof LogbookUser)) {
+            LogbookUser user = (LogbookUser) obj;
+            isEqual = this.username.equals(user.username) && this.firstname.equals(user.firstname)
+                    && this.lastname.equals(user.lastname) && this.password.equals(user.password)
+                    && Arrays.equals(this.certificate, user.certificate) && this.departmentName.equals(user.departmentName)
+                    && this.jobtitleName.equals(user.jobtitleName) && this.organizationName.equals(user.organizationName)
+                    && this.roles.containsAll(user.roles);
+        }
+        return isEqual;
+
     }
 
     @Override

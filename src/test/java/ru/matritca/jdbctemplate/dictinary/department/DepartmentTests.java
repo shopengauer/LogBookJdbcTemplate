@@ -1,5 +1,6 @@
-package ru.matritca.jdbctemplate;
+package ru.matritca.jdbctemplate.dictinary.department;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import ru.matritca.jdbctemplate.DemoApplication;
 import ru.matritca.jdbctemplate.domain.users.Department;
 import ru.matritca.jdbctemplate.repository.users.department.DepartmentDao;
 
@@ -32,6 +34,9 @@ public class DepartmentTests {
     @Autowired
     private DepartmentDao departmentDao;
 
+
+    private Department departmentForInsert1;
+    private Department departmentForInsert2;
     private List<Department> insertDepartmentList;
 
     @Before
@@ -45,22 +50,18 @@ public class DepartmentTests {
 
         insertDepartmentList =  new ArrayList<>(Arrays.asList(departmentsArray));
 
+        departmentForInsert1 = new Department("Отдел программной разработки");
+        departmentForInsert2 = new Department("Отдел разработки печатных плат");
+
     }
 
-    @Test(expected = DuplicateKeyException.class)
+    @Test
     public void departmentInsertTest() throws Exception {
 
 
-        String depName1 = "Отдел программной разработки";
-        String depName2 = "Отдел разработки печатных плат";
-
         Assert.assertNotNull(departmentDao);
-
-        // Create two departments
-        Department departmentForInsert1 = new Department();
-        departmentForInsert1.setDepartmentName(depName1);
-        Department departmentForInsert2 = new Department();
-        departmentForInsert2.setDepartmentName(depName2);
+        departmentDao.deleteAllDepartments();
+        Assert.assertEquals(0, departmentDao.findAllDepartments().size());
 
         // Check that departments does not equals null
         Assert.assertNotNull(departmentForInsert1);
@@ -71,16 +72,24 @@ public class DepartmentTests {
         departmentDao.addDepartment(departmentForInsert2);
 
         // Find before mentioned departments
-        Department findDepartmentByName1 = departmentDao.findDepartmentByName(depName1);
-        Department findDepartmentByName2 = departmentDao.findDepartmentByName(depName2);
+        Department findDepartmentByName1 = departmentDao.findDepartmentByName(departmentForInsert1.getDepartmentName());
+        Department findDepartmentByName2 = departmentDao.findDepartmentByName(departmentForInsert2.getDepartmentName());
 
         // Assert that selected departments had equals inserted departments
-        Assert.assertEquals(departmentForInsert1.getDepartmentName(), findDepartmentByName1.getDepartmentName());
-        Assert.assertEquals(departmentForInsert2.getDepartmentName(), findDepartmentByName2.getDepartmentName());
+
+        Assert.assertEquals(departmentForInsert1,findDepartmentByName1);
+        Assert.assertEquals(departmentForInsert2,findDepartmentByName2);
+
+
+        long departmentId1 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert1.getDepartmentName());
+        long departmentId2 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert2.getDepartmentName());
+        Assert.assertEquals(departmentForInsert1,departmentDao.findDepartmentById(departmentId1));
+        Assert.assertEquals(departmentForInsert2,departmentDao.findDepartmentById(departmentId2));
+
 
         // Delete this department
-        departmentDao.deleteDepartmentByDepartmentName(depName1);
-        departmentDao.deleteDepartmentByDepartmentName(depName2);
+        departmentDao.deleteDepartmentByDepartmentName(departmentForInsert1.getDepartmentName());
+        departmentDao.deleteDepartmentByDepartmentName(departmentForInsert2.getDepartmentName());
 
         // Find all departments and check that departments were deleted
         List<Department> departmentList = departmentDao.findAllDepartments();
@@ -97,13 +106,25 @@ public class DepartmentTests {
 
         // Delete all departments and check that all departments were deleted
         departmentDao.deleteAllDepartments();
-        List<Department> findEmptytList = departmentDao.findAllDepartments();
-        Assert.assertTrue(findEmptytList.isEmpty());
+        List<Department> findEmptyList = departmentDao.findAllDepartments();
+        Assert.assertTrue(findEmptyList.isEmpty());
+
+
+      //  System.out.println(departmentDao.findDepartmentIdByDepartmentName("Aws"));
+//        Department department = null;
+//        departmentDao.addDepartment(department);
+
+    }
+
+    @Test(expected = DuplicateKeyException.class)
+    public void testDuplicateEntry() throws Exception {
+        Assert.assertNotNull(departmentDao);
+        departmentDao.deleteAllDepartments();
+        Assert.assertEquals(0, departmentDao.findAllDepartments().size());
 
         // Try to insert duplicate entry
         departmentDao.addDepartment(new Department("Маркетинг"));
         departmentDao.addDepartment(new Department("Маркетинг"));
-
     }
 
     @Test(expected = DataIntegrityViolationException.class)
@@ -124,4 +145,12 @@ public class DepartmentTests {
     }
 
 
+    @After
+    public void tearDown() throws Exception {
+
+        Assert.assertNotNull(departmentDao);
+        departmentDao.deleteAllDepartments();
+        Assert.assertEquals(0, departmentDao.findAllDepartments().size());
+
+    }
 }

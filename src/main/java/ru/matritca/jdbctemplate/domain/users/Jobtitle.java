@@ -30,4 +30,16 @@ public class Jobtitle {
     public void setJobtitleName(String jobtitleName) {
         this.jobtitleName = jobtitleName;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEqual = false;
+        if ((obj != null) && (obj instanceof Jobtitle)) {
+            Jobtitle target = (Jobtitle)obj;
+            isEqual = target.getJobtitleName().equals(this.getJobtitleName());
+        }
+        return isEqual;
+
+    }
+
 }
