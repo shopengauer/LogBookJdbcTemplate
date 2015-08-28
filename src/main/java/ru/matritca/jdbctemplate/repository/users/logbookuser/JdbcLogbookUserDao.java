@@ -156,7 +156,18 @@ public class JdbcLogbookUserDao implements LogbookUsersDao
         return 0;
     }
 
+    @Override
+    public int addLogbookUser2(LogbookUser logbookUser) {
 
+        // Внешние ключи
+//        Long organizationId = null;
+//        Long jobtitleId = null;
+//        Long departmentId = null;
+//        jdbcDepartmentDao.addDepartmentIfNotExists()
+
+
+        return 0;
+    }
 
     @Override
     public long getLogbookUserIdByUsername(String username) {
@@ -201,6 +212,16 @@ public class JdbcLogbookUserDao implements LogbookUsersDao
 
     @Override
     public void updateLogbookUser(LogbookUser logbookUser) {//todo
+
+           String sql = "UPDATE USERS.LOGBOOK_USER SET LOGBOOK_USERNAME = :username," +
+                   "LOGBOOK_USER_FIRSTNAME = :firstname, LOGBOOK_USER_LASTNAME = :lastname," +
+                   "LOGBOOK_USER_PASSWORD = :password, LOGBOOK_USER_CERTIFICATE = :certificate," +
+                   "LOGBOOK_USER_ORGANIZATION_ID = :organizationId,LOGBOOK_USER_DEPARTMENT_ID = :departmentId," +
+                   "LOGBOOK_USER_JOBTITLE_ID = :jobtitleId WHERE LOGBOOK_USER_ID = :logbookUserId";
+
+
+           SqlParameterSource parameterSource = new MapSqlParameterSource("username",logbookUser.getUsername())
+                   .addValue("firstname",logbookUser.getFirstname());
 
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 public interface LogbookUsersDao {
 
      int addLogbookUser(LogbookUser logbookUser);
+     int addLogbookUser2(LogbookUser logbookUser);
      void updateLogbookUser(LogbookUser logbookUser);
 
      long getLogbookUserIdByUsername(String username);

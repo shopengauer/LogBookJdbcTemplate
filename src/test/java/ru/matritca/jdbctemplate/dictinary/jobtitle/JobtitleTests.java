@@ -14,6 +14,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import ru.matritca.jdbctemplate.DemoApplication;
+import ru.matritca.jdbctemplate.domain.users.Department;
 import ru.matritca.jdbctemplate.domain.users.Jobtitle;
 import ru.matritca.jdbctemplate.repository.users.jobtitle.JobtitleDao;
 
@@ -85,6 +86,12 @@ public class JobtitleTests {
         Assert.assertEquals(jobtitleForInsert1,jdbcJobtitleDao.findJobtitleById(jobtitleId1));
         Assert.assertEquals(jobtitleForInsert2,jdbcJobtitleDao.findJobtitleById(jobtitleId2));
 
+        Assert.assertTrue(jdbcJobtitleDao.isJobtitleExists(jobtitleForInsert1.getJobtitleName()));
+        Assert.assertTrue(jdbcJobtitleDao.isJobtitleExists(jobtitleForInsert2.getJobtitleName()));
+        Assert.assertFalse(jdbcJobtitleDao.isJobtitleExists("Муравьед"));
+        Assert.assertFalse(jdbcJobtitleDao.isJobtitleExists("Кукун"));
+
+
         // Delete this job title
         jdbcJobtitleDao.deleteJobtitleByJobtitleName(jobtitleForInsert1.getJobtitleName());
         jdbcJobtitleDao.deleteJobtitleByJobtitleName(jobtitleForInsert2.getJobtitleName());
@@ -102,6 +109,13 @@ public class JobtitleTests {
         jdbcJobtitleDao.deleteAllJobtitles();
         List<Jobtitle> findEmptytList = jdbcJobtitleDao.findAllJobtitles();
         Assert.assertTrue(findEmptytList.isEmpty());
+
+
+        // Проверяем метод добавления должности с проверкой на ее существование
+        Jobtitle jobNotExists = new Jobtitle("Архитектор ПО");
+        Assert.assertEquals(1,jdbcJobtitleDao.addJobtitleIfNotExists(jobNotExists));
+        Assert.assertEquals(0,jdbcJobtitleDao.addJobtitleIfNotExists(jobNotExists));
+
 
 
     }

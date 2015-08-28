@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.matritca.jdbctemplate.domain.users.LogbookUserRole;
 
 import java.sql.ResultSet;
@@ -45,6 +46,23 @@ public class JdbcLogbookUserRoleDictDao implements LogbookUserRoleDictDao {
                 "VALUES (nextval('USERS_SEQUENCE'),:logbookUserRoleName,:logbookUserRoleDesc)";
         SqlParameterSource parameterSource = new MapSqlParameterSource("logbookUserRoleName",logbookUserRole.getLogbookUserRoleName()).addValue("logbookUserRoleDesc",logbookUserRole.getLogbookUserRoleDesc());
         return namedParameterJdbcTemplate.update(sql,parameterSource);
+    }
+
+    @Override
+    @Transactional
+    public int addLogbookUserRoleIfNotExists(LogbookUserRole logbookUserRole) {
+        if(isLogbookUserRoleExists(logbookUserRole.getLogbookUserRoleName()))
+          return 0;
+        return this.addLogbookUserRole(logbookUserRole);
+
+    }
+
+    @Override
+    public boolean isLogbookUserRoleExists(String logbookUserRoleName) {
+        String sql = "SELECT LOGBOOK_USER_ROLE_NAME FROM USERS.LOGBOOK_USER_ROLE_DICTIONARY WHERE LOGBOOK_USER_ROLE_NAME = :logbookUserRoleName";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("logbookUserRoleName",logbookUserRoleName);
+        return !namedParameterJdbcTemplate.queryForList(sql,parameterSource,String.class).isEmpty();
+
     }
 
     @Override

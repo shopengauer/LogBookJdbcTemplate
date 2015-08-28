@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import ru.matritca.jdbctemplate.DemoApplication;
+import ru.matritca.jdbctemplate.domain.users.Jobtitle;
 import ru.matritca.jdbctemplate.domain.users.LogbookUserRole;
 import ru.matritca.jdbctemplate.repository.users.logbookuserrole.LogbookUserRoleDictDao;
 
@@ -91,7 +93,13 @@ public class LogbookUserRoleDictTests {
         long logbookUserRoleId1 = logbookUserRoleDictDao.findLogbookUserRoleIdByLogbookUserRoleName(logbookUserRoleForInsert1.getLogbookUserRoleName());
         long logbookUserRoleId2 = logbookUserRoleDictDao.findLogbookUserRoleIdByLogbookUserRoleName(logbookUserRoleForInsert2.getLogbookUserRoleName());
         Assert.assertEquals(logbookUserRoleForInsert1.getLogbookUserRoleName(),logbookUserRoleDictDao.findLogbookUserRoleById(logbookUserRoleId1).getLogbookUserRoleName());
-        Assert.assertEquals(logbookUserRoleForInsert2.getLogbookUserRoleName(),logbookUserRoleDictDao.findLogbookUserRoleById(logbookUserRoleId2).getLogbookUserRoleName());
+        Assert.assertEquals(logbookUserRoleForInsert2.getLogbookUserRoleName(), logbookUserRoleDictDao.findLogbookUserRoleById(logbookUserRoleId2).getLogbookUserRoleName());
+
+
+        Assert.assertTrue(logbookUserRoleDictDao.isLogbookUserRoleExists(logbookUserRoleForInsert1.getLogbookUserRoleName()));
+        Assert.assertTrue(logbookUserRoleDictDao.isLogbookUserRoleExists(logbookUserRoleForInsert2.getLogbookUserRoleName()));
+        Assert.assertFalse(logbookUserRoleDictDao.isLogbookUserRoleExists("Будак"));
+        Assert.assertFalse(logbookUserRoleDictDao.isLogbookUserRoleExists("Милонов"));
 
 
 
@@ -113,6 +121,15 @@ public class LogbookUserRoleDictTests {
         List<LogbookUserRole> findEmptytList = logbookUserRoleDictDao.findAllLogbookUserRoles();
         Assert.assertTrue(findEmptytList.isEmpty());
 
+     // Проверяем метод добавления роли с проверкой на ее существование
+        LogbookUserRole logbookUserRole = new LogbookUserRole("Сысоева-Степанович");
+        Assert.assertEquals(1,logbookUserRoleDictDao.addLogbookUserRoleIfNotExists(logbookUserRole));
+        Assert.assertEquals(0, logbookUserRoleDictDao.addLogbookUserRoleIfNotExists(logbookUserRole));
+       try{
+           logbookUserRoleDictDao.findLogbookUserRoleByName("Крубля");
+       }catch (EmptyResultDataAccessException e){
+           System.out.println("Данная роль отсутствует");
+       }
 
 
     }

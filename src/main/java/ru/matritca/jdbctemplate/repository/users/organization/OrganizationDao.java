@@ -12,6 +12,8 @@ public interface OrganizationDao {
 
     int addOrganization(Organization organization);
     int[] addListOfOrganization(List<Organization> organizationList);
+    int addOrganizationIfNotExists(Organization jobtitle);
+    boolean isOrganizationExists(String organizationName);
     Organization findOrganizationByName(String organizationName);
     Organization findOrganizationById(long id);
     List<Organization> findAllOrganizations();

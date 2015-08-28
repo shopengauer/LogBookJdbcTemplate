@@ -10,6 +10,8 @@ import java.util.List;
 public interface DepartmentDao {
 
     int addDepartment(Department department);
+    int addDepartmentIfNotExists(Department department);
+    boolean isDepartmentExists(String departmentName);
     int[] addListOfDepartment(List<Department> departmentList);
     Department findDepartmentByName(String departmentName);
     Department findDepartmentById(long id);
@@ -17,4 +19,5 @@ public interface DepartmentDao {
     int deleteDepartmentByDepartmentName(String departmentName);
     long findDepartmentIdByDepartmentName(String departmentName);
     void deleteAllDepartments();
+
 }

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import ru.matritca.jdbctemplate.DemoApplication;
@@ -76,7 +77,13 @@ public class LogbookUserTests {
          Assert.assertNotNull(jdbcLogbookUserDao);
 
          jdbcLogbookUserDao.addLogbookUser(insertLogbookUser1);
-         jdbcLogbookUserDao.addLogbookUser(insertLogbookUser2);
+
+//        try {
+//            jdbcLogbookUserDao.addLogbookUser(insertLogbookUser1);
+//        }catch (DuplicateKeyException e){
+//            System.out.println(e.toString());
+//        }
+        jdbcLogbookUserDao.addLogbookUser(insertLogbookUser2);
 
          LogbookUser findLogbookUser1 = jdbcLogbookUserDao.findLogbookUserByUsername(insertLogbookUser1.getUsername());
          LogbookUser findLogbookUser2 = jdbcLogbookUserDao.findLogbookUserByUsername(insertLogbookUser2.getUsername());

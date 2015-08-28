@@ -80,12 +80,17 @@ public class DepartmentTests {
         Assert.assertEquals(departmentForInsert1,findDepartmentByName1);
         Assert.assertEquals(departmentForInsert2,findDepartmentByName2);
 
-
+         // Проверка метода поиска id отдела по его имени
         long departmentId1 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert1.getDepartmentName());
         long departmentId2 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert2.getDepartmentName());
-        Assert.assertEquals(departmentForInsert1,departmentDao.findDepartmentById(departmentId1));
-        Assert.assertEquals(departmentForInsert2,departmentDao.findDepartmentById(departmentId2));
+        Assert.assertEquals(departmentForInsert1, departmentDao.findDepartmentById(departmentId1));
+        Assert.assertEquals(departmentForInsert2, departmentDao.findDepartmentById(departmentId2));
 
+        // проверка метода проверки на существовании в таблице записы с аналогичным именем
+        Assert.assertTrue(departmentDao.isDepartmentExists(departmentForInsert1.getDepartmentName()));
+        Assert.assertTrue(departmentDao.isDepartmentExists(departmentForInsert2.getDepartmentName()));
+        Assert.assertFalse(departmentDao.isDepartmentExists("Бахча"));
+        Assert.assertFalse(departmentDao.isDepartmentExists("Пупиду"));
 
         // Delete this department
         departmentDao.deleteDepartmentByDepartmentName(departmentForInsert1.getDepartmentName());
@@ -109,10 +114,11 @@ public class DepartmentTests {
         List<Department> findEmptyList = departmentDao.findAllDepartments();
         Assert.assertTrue(findEmptyList.isEmpty());
 
+        // Проверяем метод добавления отдела с проверкой на его существование
+        Department depNotExists = new Department("Отдел обеспечения и комплектации");
+        Assert.assertEquals(1,departmentDao.addDepartmentIfNotExists(depNotExists));
+        Assert.assertEquals(0,departmentDao.addDepartmentIfNotExists(depNotExists));
 
-      //  System.out.println(departmentDao.findDepartmentIdByDepartmentName("Aws"));
-//        Department department = null;
-//        departmentDao.addDepartment(department);
 
     }
 

@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.matritca.jdbctemplate.domain.users.Department;
 import ru.matritca.jdbctemplate.domain.users.Jobtitle;
 
 import java.sql.ResultSet;
@@ -40,6 +42,23 @@ public class JdbcJobtitleDao implements JobtitleDao {
         String sql = "INSERT INTO USERS.JOBTITLE (JOBTITLE_ID,JOBTITLE_NAME) VALUES(NEXTVAL('USERS_SEQUENCE'),:jobTitleName)";
         SqlParameterSource parameterSource = new MapSqlParameterSource("jobTitleName", jobtitle.getJobtitleName());
         return namedParameterJdbcTemplate.update(sql,parameterSource);
+    }
+
+    @Override
+    @Transactional
+    public int addJobtitleIfNotExists(Jobtitle jobtitle) {
+       if(this.isJobtitleExists(jobtitle.getJobtitleName()))
+        return 0;
+       return this.addJobtitle(jobtitle);
+    }
+
+    @Override
+    public boolean isJobtitleExists(String jobtitleName) {
+        String sql = "SELECT JOBTITLE_NAME FROM USERS.JOBTITLE WHERE JOBTITLE_NAME = :jobtitleName";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("jobtitleName",jobtitleName);
+        return !namedParameterJdbcTemplate.queryForList(sql,parameterSource,String.class).isEmpty();
+
+
     }
 
     @Override

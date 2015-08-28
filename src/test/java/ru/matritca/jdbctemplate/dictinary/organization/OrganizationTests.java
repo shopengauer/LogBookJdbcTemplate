@@ -14,6 +14,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import ru.matritca.jdbctemplate.DemoApplication;
+import ru.matritca.jdbctemplate.domain.users.Jobtitle;
 import ru.matritca.jdbctemplate.domain.users.Organization;
 import ru.matritca.jdbctemplate.repository.users.organization.OrganizationDao;
 
@@ -92,10 +93,13 @@ public class OrganizationTests {
 
         long organizationId1 = jdbcOrganizationDao.findOrganizationIdByOrganizationName(organizationForInsert1.getOrganizationName());
         long organizationId2 = jdbcOrganizationDao.findOrganizationIdByOrganizationName(organizationForInsert2.getOrganizationName());
-        Assert.assertEquals(organizationForInsert1.getOrganizationName(),jdbcOrganizationDao.findOrganizationById(organizationId1).getOrganizationName());
-        Assert.assertEquals(organizationForInsert2.getOrganizationName(),jdbcOrganizationDao.findOrganizationById(organizationId2).getOrganizationName());
+        Assert.assertEquals(organizationForInsert1.getOrganizationName(), jdbcOrganizationDao.findOrganizationById(organizationId1).getOrganizationName());
+        Assert.assertEquals(organizationForInsert2.getOrganizationName(), jdbcOrganizationDao.findOrganizationById(organizationId2).getOrganizationName());
 
-
+        Assert.assertTrue(jdbcOrganizationDao.isOrganizationExists(organizationForInsert1.getOrganizationName()));
+        Assert.assertTrue(jdbcOrganizationDao.isOrganizationExists(organizationForInsert2.getOrganizationName()));
+        Assert.assertFalse(jdbcOrganizationDao.isOrganizationExists("НИИЧАВО"));
+        Assert.assertFalse(jdbcOrganizationDao.isOrganizationExists("СВЯЗЬТЕЛ"));
 
         // Delete this organizations
         jdbcOrganizationDao.deleteOrganizationByOrganizationName(organizationForInsert1.getOrganizationName());
@@ -115,7 +119,14 @@ public class OrganizationTests {
         List<Organization> findEmptyList = jdbcOrganizationDao.findAllOrganizations();
         Assert.assertEquals(0, findEmptyList.size());
 
-        }
+        // Проверяем метод добавления организации с проверкой на ее существование
+        Organization organizationNotExists = new Organization("Google");
+        Assert.assertEquals(1,jdbcOrganizationDao.addOrganizationIfNotExists(organizationNotExists));
+        Assert.assertEquals(0,jdbcOrganizationDao.addOrganizationIfNotExists(organizationNotExists));
+
+
+
+    }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void testInsertNullJobtitleName() throws Exception {

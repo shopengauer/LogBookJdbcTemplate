@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.matritca.jdbctemplate.domain.users.Organization;
 
 import java.sql.ResultSet;
@@ -38,6 +39,22 @@ public class JdbcOrganizationDao implements OrganizationDao{
         SqlParameterSource parameterSource = new MapSqlParameterSource("organizationName",organization.getOrganizationName())
                 .addValue("organizationDesc", organization.getOrganizationDesc());
         return namedParameterJdbcTemplate.update(sql, parameterSource);
+    }
+
+    @Override
+    @Transactional
+    public int addOrganizationIfNotExists(Organization organization) {
+        if(this.isOrganizationExists(organization.getOrganizationName()))
+            return 0;
+        return this.addOrganization(organization);
+
+    }
+
+    @Override
+    public boolean isOrganizationExists(String organizationName) {
+        String sql = "SELECT ORGANIZATION_NAME FROM USERS.ORGANIZATION WHERE ORGANIZATION_NAME = :organizationName";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("organizationName",organizationName);
+        return !namedParameterJdbcTemplate.queryForList(sql,parameterSource,String.class).isEmpty();
     }
 
     @Override

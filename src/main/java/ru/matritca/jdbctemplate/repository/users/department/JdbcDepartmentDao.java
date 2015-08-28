@@ -39,6 +39,14 @@ public class JdbcDepartmentDao implements DepartmentDao {
     }
 
     @Override
+    public int addDepartmentIfNotExists(Department department) {
+       if(this.isDepartmentExists(department.getDepartmentName())){
+         return 0;
+       }
+      return addDepartment(department);
+    }
+
+    @Override
     public Department findDepartmentByName(String departmentName) {
         String sql = "SELECT * FROM USERS.DEPARTMENT WHERE DEPARTMENT_NAME=:departmentName";
         SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
@@ -87,4 +95,11 @@ public class JdbcDepartmentDao implements DepartmentDao {
         String sql = "DELETE FROM users.department";
         namedParameterJdbcTemplate.getJdbcOperations().execute(sql);
       }
+
+    @Override
+    public boolean isDepartmentExists(String departmentName) {
+        String sql = "SELECT DEPARTMENT_NAME FROM USERS.DEPARTMENT WHERE DEPARTMENT_NAME = :departmentName";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
+        return !namedParameterJdbcTemplate.queryForList(sql,parameterSource,String.class).isEmpty();
+    }
 }
