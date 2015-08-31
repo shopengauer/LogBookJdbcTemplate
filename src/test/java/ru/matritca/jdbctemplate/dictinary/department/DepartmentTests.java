@@ -1,9 +1,6 @@
 package ru.matritca.jdbctemplate.dictinary.department;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +14,7 @@ import ru.matritca.jdbctemplate.DemoApplication;
 import ru.matritca.jdbctemplate.domain.users.Department;
 import ru.matritca.jdbctemplate.repository.users.department.DepartmentDao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Vasiliy on 19.08.2015.
@@ -27,6 +22,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DemoApplication.class)
 @WebAppConfiguration
+@Ignore
 public class DepartmentTests {
 
     private Logger logger = LoggerFactory.getLogger(DepartmentTests.class);
@@ -37,7 +33,13 @@ public class DepartmentTests {
 
     private Department departmentForInsert1;
     private Department departmentForInsert2;
+    private Department departmentForUpdate1;
+    private Department departmentForUpdate2;
+
     private List<Department> insertDepartmentList;
+    private Set<Department> insertDepartmentSet;
+
+
 
     @Before
     public void setUp() throws Exception {
@@ -49,9 +51,12 @@ public class DepartmentTests {
                new Department("ОТК"),new Department("ПЭО")};
 
         insertDepartmentList =  new ArrayList<>(Arrays.asList(departmentsArray));
+        insertDepartmentSet = new HashSet<>(Arrays.asList(departmentsArray));
 
         departmentForInsert1 = new Department("Отдел программной разработки");
         departmentForInsert2 = new Department("Отдел разработки печатных плат");
+        departmentForUpdate1 = new Department("Отдел программной архитектуры");
+        departmentForUpdate2 = new Department("Отдел SQL");
 
     }
 
@@ -72,25 +77,34 @@ public class DepartmentTests {
         departmentDao.addDepartment(departmentForInsert2);
 
         // Find before mentioned departments
-        Department findDepartmentByName1 = departmentDao.findDepartmentByName(departmentForInsert1.getDepartmentName());
-        Department findDepartmentByName2 = departmentDao.findDepartmentByName(departmentForInsert2.getDepartmentName());
+        List<Department> findDepartmentByName1 = departmentDao.findDepartmentByName(departmentForInsert1.getDepartmentName());
+        List<Department> findDepartmentByName2 = departmentDao.findDepartmentByName(departmentForInsert2.getDepartmentName());
 
         // Assert that selected departments had equals inserted departments
 
-        Assert.assertEquals(departmentForInsert1,findDepartmentByName1);
-        Assert.assertEquals(departmentForInsert2,findDepartmentByName2);
+        Assert.assertEquals(departmentForInsert1,findDepartmentByName1.get(0));
+        Assert.assertEquals(departmentForInsert2,findDepartmentByName2.get(0));
 
          // Проверка метода поиска id отдела по его имени
-        long departmentId1 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert1.getDepartmentName());
-        long departmentId2 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert2.getDepartmentName());
+        long departmentId1 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert1.getDepartmentName()).get(0);
+        long departmentId2 = departmentDao.findDepartmentIdByDepartmentName(departmentForInsert2.getDepartmentName()).get(0);
         Assert.assertEquals(departmentForInsert1, departmentDao.findDepartmentById(departmentId1));
         Assert.assertEquals(departmentForInsert2, departmentDao.findDepartmentById(departmentId2));
 
         // проверка метода проверки на существовании в таблице записы с аналогичным именем
-        Assert.assertTrue(departmentDao.isDepartmentExists(departmentForInsert1.getDepartmentName()));
-        Assert.assertTrue(departmentDao.isDepartmentExists(departmentForInsert2.getDepartmentName()));
-        Assert.assertFalse(departmentDao.isDepartmentExists("Бахча"));
-        Assert.assertFalse(departmentDao.isDepartmentExists("Пупиду"));
+        Assert.assertTrue(departmentDao.isDepartmentExists(departmentForInsert1));
+        Assert.assertTrue(departmentDao.isDepartmentExists(departmentForInsert2));
+         Assert.assertFalse(departmentDao.isDepartmentExists(new Department("Бахча")));
+         Assert.assertFalse(departmentDao.isDepartmentExists(new Department("Пупиду")));
+
+        List<Department> departmentForUpdate1 = departmentDao.findDepartmentByName(departmentForInsert1.getDepartmentName());
+        departmentForUpdate1.get(0).setDepartmentName(this.departmentForUpdate1.getDepartmentName());
+        Assert.assertEquals(1,departmentDao.updateDepartment(departmentForUpdate1.get(0)));
+
+        List<Department> departmentForUpdate2 = departmentDao.findDepartmentByName(departmentForInsert2.getDepartmentName());
+        Assert.assertEquals(0,departmentDao.updateDepartment(departmentForUpdate2.get(0)));
+
+        //Assert.assertEquals(this.departmentForUpdate1,departmentDao.);
 
         // Delete this department
         departmentDao.deleteDepartmentByDepartmentName(departmentForInsert1.getDepartmentName());

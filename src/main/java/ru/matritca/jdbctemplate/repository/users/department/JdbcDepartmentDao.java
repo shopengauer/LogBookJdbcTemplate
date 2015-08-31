@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.matritca.jdbctemplate.domain.users.Department;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Vasiliy on 17.08.2015.
@@ -40,24 +42,24 @@ public class JdbcDepartmentDao implements DepartmentDao {
 
     @Override
     public int addDepartmentIfNotExists(Department department) {
-       if(this.isDepartmentExists(department.getDepartmentName())){
+       if(this.isDepartmentExists(department)){
          return 0;
        }
       return addDepartment(department);
     }
 
     @Override
-    public Department findDepartmentByName(String departmentName) {
+    public List<Department> findDepartmentByName(String departmentName) {
         String sql = "SELECT * FROM USERS.DEPARTMENT WHERE DEPARTMENT_NAME=:departmentName";
         SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, new DepartmentMapper());
+        return namedParameterJdbcTemplate.query(sql, parameterSource, new DepartmentMapper());
     }
 
     @Override
-    public Department findDepartmentById(long id) {
+    public List<Department> findDepartmentById(long id) {
         String sql = "SELECT * FROM USERS.DEPARTMENT WHERE DEPARTMENT_ID = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id",id);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, new DepartmentMapper());
+        return namedParameterJdbcTemplate.query(sql, parameterSource, new DepartmentMapper());
     }
 
 
@@ -65,6 +67,13 @@ public class JdbcDepartmentDao implements DepartmentDao {
     public int[] addListOfDepartment(final List<Department> departmentList) {
         String sql = "INSERT INTO USERS.DEPARTMENT (DEPARTMENT_ID,DEPARTMENT_NAME) values (NEXTVAL('USERS_SEQUENCE'),:departmentName)";
         SqlParameterSource[] parameterSource = SqlParameterSourceUtils.createBatch(departmentList.toArray());
+        return namedParameterJdbcTemplate.batchUpdate(sql, parameterSource);
+    }
+
+    @Override
+    public int[] addSetOfDepartment(Set<Department> departmentSet) {
+        String sql = "INSERT INTO USERS.DEPARTMENT (DEPARTMENT_ID,DEPARTMENT_NAME) values (NEXTVAL('USERS_SEQUENCE'),:departmentName)";
+        SqlParameterSource[] parameterSource = SqlParameterSourceUtils.createBatch(departmentSet.toArray());
         return namedParameterJdbcTemplate.batchUpdate(sql, parameterSource);
     }
 
@@ -83,11 +92,10 @@ public class JdbcDepartmentDao implements DepartmentDao {
 
 
     @Override
-    public long findDepartmentIdByDepartmentName(String departmentName) {
+    public List<Long> findDepartmentIdByDepartmentName(String departmentName) {
         String sql = "SELECT department_id FROM users.department WHERE department_name = :departmentName";
         SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
-        namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameterSource, Integer.class);
+        return namedParameterJdbcTemplate.queryForList(sql, parameterSource, Long.class);
     }
 
     @Override
@@ -97,9 +105,23 @@ public class JdbcDepartmentDao implements DepartmentDao {
       }
 
     @Override
-    public boolean isDepartmentExists(String departmentName) {
-        String sql = "SELECT DEPARTMENT_NAME FROM USERS.DEPARTMENT WHERE DEPARTMENT_NAME = :departmentName";
-        SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",departmentName);
-        return !namedParameterJdbcTemplate.queryForList(sql,parameterSource,String.class).isEmpty();
+    public boolean isDepartmentExists(Department department) {
+        String sql = "SELECT * FROM USERS.DEPARTMENT WHERE DEPARTMENT_NAME = :departmentName";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",department.getDepartmentName());
+        return !namedParameterJdbcTemplate.query(sql, parameterSource, new DepartmentMapper()).isEmpty();
+    }
+
+    @Override
+    @Transactional
+    public int updateDepartment(Department department) {
+       if(isDepartmentExists(department)){
+          return 0;}
+      String sql = "UPDATE USERS.DEPARTMENT SET DEPARTMENT_NAME = :departmentName" +
+              " WHERE DEPARTMENT_ID = :departmentId";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("departmentName",department.getDepartmentName())
+                .addValue("departmentId",department.getId());
+        //namedParameterJdbcTemplate.update(sql,parameterSource);
+        return namedParameterJdbcTemplate.update(sql,parameterSource);
+
     }
 }

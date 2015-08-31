@@ -91,10 +91,10 @@ public class JdbcLogbookUserDao implements LogbookUsersDao
           // Аналогично поступаем с Department и Jobtitle
         if(logbookUser.getDepartmentName() != null){
             try {
-                departmentId = jdbcDepartmentDao.findDepartmentIdByDepartmentName(logbookUser.getDepartmentName());
+                departmentId = jdbcDepartmentDao.findDepartmentIdByDepartmentName(logbookUser.getDepartmentName()).get(0);
             }catch (EmptyResultDataAccessException exception){
                 jdbcDepartmentDao.addDepartment(new Department(logbookUser.getDepartmentName()));
-                departmentId = jdbcDepartmentDao.findDepartmentIdByDepartmentName(logbookUser.getDepartmentName());
+                departmentId = jdbcDepartmentDao.findDepartmentIdByDepartmentName(logbookUser.getDepartmentName()).get(0);
             }
         }
 
@@ -143,7 +143,7 @@ public class JdbcLogbookUserDao implements LogbookUsersDao
                 logbookUserRoleDictDao.addLogbookUserRole(new LogbookUserRole(role));
                 // запрашиваем айди созданной роли
                 logbookUserRoleId = logbookUserRoleDictDao.findLogbookUserRoleIdByLogbookUserRoleName(role);
-                // todo продумать другую логику невозможности создать юзера с несуществующей ролью
+
             }
             // Теперь мапим параметры
             SqlParameterSource parameterSource1 = new MapSqlParameterSource("logbookUserId", logbookUserId)
@@ -152,21 +152,74 @@ public class JdbcLogbookUserDao implements LogbookUsersDao
             namedParameterJdbcTemplate.update(sql2, parameterSource1);
         }
 
-
         return 0;
     }
 
+
     @Override
-    public int addLogbookUser2(LogbookUser logbookUser) {
+    @Transactional
+    public int addLogbookUserIfNotExists(LogbookUser logbookUser) {
+        if(isLogbookUserExists(logbookUser.getUsername()))
+             return 0;
 
-        // Внешние ключи
-//        Long organizationId = null;
-//        Long jobtitleId = null;
-//        Long departmentId = null;
-//        jdbcDepartmentDao.addDepartmentIfNotExists()
+        jdbcDepartmentDao.addDepartmentIfNotExists(new Department(logbookUser.getDepartmentName()));
+        Long departmentId = jdbcDepartmentDao.findDepartmentIdByDepartmentName(logbookUser.getDepartmentName()).get(0);
 
+        jdbcJobtitleDao.addJobtitleIfNotExists(new Jobtitle(logbookUser.getJobtitleName()));
+        Long jobtitleId = jdbcJobtitleDao.findJobtitleIdByJobtitleName(logbookUser.getJobtitleName());
 
-        return 0;
+        jdbcOrganizationDao.addOrganizationIfNotExists(new Organization(logbookUser.getOrganizationName()));
+        Long organizationId = jdbcOrganizationDao.findOrganizationIdByOrganizationName(logbookUser.getOrganizationName());
+
+        String sql = "INSERT INTO USERS.LOGBOOK_USER (LOGBOOK_USER_ID,LOGBOOK_USERNAME,LOGBOOK_USER_FIRSTNAME," +
+                "LOGBOOK_USER_LASTNAME,LOGBOOK_USER_PASSWORD,LOGBOOK_USER_CERTIFICATE,LOGBOOK_USER_ORGANIZATION_ID," +
+                " LOGBOOK_USER_DEPARTMENT_ID,LOGBOOK_USER_JOBTITLE_ID)" +
+                " VALUES (nextval('USERS_SEQUENCE'),:username,:firstname,:lastname,:password,:certificate," +
+                ":organizationId,:departmentId,:jobtitleId)";
+
+        SqlParameterSource parameterSource = new MapSqlParameterSource("username",logbookUser.getUsername())
+                .addValue("firstname", logbookUser.getFirstname()).addValue("lastname", logbookUser.getLastname())
+                .addValue("password", logbookUser.getPassword()).addValue("certificate",logbookUser.getCertificate())
+                .addValue("organizationId", organizationId).addValue("departmentId", departmentId)
+                .addValue("jobtitleId", jobtitleId);
+
+         namedParameterJdbcTemplate.update(sql,parameterSource);
+
+         addLogbookUserRoles(logbookUser);
+
+       return 1;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isLogbookUserExists(String username) {
+        String sql = "SELECT LOGBOOK_USERNAME FROM USERS.LOGBOOK_USER WHERE LOGBOOK_USERNAME = :username";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("username",username);
+        return !namedParameterJdbcTemplate.queryForList(sql,parameterSource,String.class).isEmpty();
+    }
+
+    @Override
+    public int addLogbookUserRoles(LogbookUser logbookUser) {
+
+        Long logbookUserId = getLogbookUserIdByUsername(logbookUser.getUsername());
+
+        String sql = "INSERT INTO USERS.LOGBOOK_USER_ROLE (LOGBOOK_USER_ROLE_ENTRY_ID," +
+                "LOGBOOK_USER_ID,LOGBOOK_USER_ROLE_ID) VALUES (nextval('USERS_SEQUENCE')," +
+                ":logbookUserId,:logbookUserRoleId)";
+
+        // перебираем List со всеми ролями юзера
+        for (String role : logbookUser.getRoles()) {
+            logbookUserRoleDictDao.addLogbookUserRoleIfNotExists(new LogbookUserRole(role));
+            // запрашиваем айди созданной роли
+            Long logbookUserRoleId = logbookUserRoleDictDao.findLogbookUserRoleIdByLogbookUserRoleName(role);
+            // Теперь мапим параметры
+            SqlParameterSource parameterSource1 = new MapSqlParameterSource("logbookUserId", logbookUserId)
+                    .addValue("logbookUserRoleId", logbookUserRoleId);
+            // и сохраняем текущую роль юзера в базу
+            namedParameterJdbcTemplate.update(sql, parameterSource1);
+        }
+
+        return 1;
     }
 
     @Override

@@ -14,7 +14,7 @@ public class LogbookUser implements Serializable,Comparable<LogbookUser>{
      private String firstname;
      private String lastname;
      private String password;
-     private List<String> roles;
+     private List<String> roles;  // todo реализовать set ролей
      private byte[] certificate;
      private String organizationName;
      private String departmentName;

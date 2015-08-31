@@ -31,6 +31,7 @@ public class LogbookUserTests {
 
     private LogbookUser insertLogbookUser1;
     private LogbookUser insertLogbookUser2;
+    private LogbookUser insertLogbookUser3;
 
     String user1role1;
     String user1role2;
@@ -68,6 +69,13 @@ public class LogbookUserTests {
         insertLogbookUser2.setPassword("321");
         insertLogbookUser2.setCertificate(new byte[]{'a','2','3','4','5'});
 
+        insertLogbookUser3 = new LogbookUser("Kuksha","Михайлов","Серафим",roles2);
+        insertLogbookUser3.setOrganizationName("ООО 'Матрица'");
+        insertLogbookUser3.setDepartmentName("КУРОЦАПА");
+        insertLogbookUser3.setJobtitleName("Бабигуль ОТК");
+        insertLogbookUser3.setPassword("321");
+        insertLogbookUser3.setCertificate(new byte[]{'a','2','3','4','5'});
+
 
     }
 
@@ -78,39 +86,32 @@ public class LogbookUserTests {
 
          jdbcLogbookUserDao.addLogbookUser(insertLogbookUser1);
 
-//        try {
-//            jdbcLogbookUserDao.addLogbookUser(insertLogbookUser1);
-//        }catch (DuplicateKeyException e){
-//            System.out.println(e.toString());
-//        }
-        jdbcLogbookUserDao.addLogbookUser(insertLogbookUser2);
+         jdbcLogbookUserDao.addLogbookUser(insertLogbookUser2);
+
+
+         Assert.assertTrue(jdbcLogbookUserDao.isLogbookUserExists(insertLogbookUser1.getUsername()));
+         Assert.assertTrue(jdbcLogbookUserDao.isLogbookUserExists(insertLogbookUser2.getUsername()));
+
+         Assert.assertFalse(jdbcLogbookUserDao.isLogbookUserExists("GAGA"));
+         Assert.assertFalse(jdbcLogbookUserDao.isLogbookUserExists("BABA"));
+
+
+        Assert.assertEquals(0, jdbcLogbookUserDao.addLogbookUserIfNotExists(insertLogbookUser1));
+        Assert.assertEquals(1, jdbcLogbookUserDao.addLogbookUserIfNotExists(insertLogbookUser3));
+
+
+
 
          LogbookUser findLogbookUser1 = jdbcLogbookUserDao.findLogbookUserByUsername(insertLogbookUser1.getUsername());
          LogbookUser findLogbookUser2 = jdbcLogbookUserDao.findLogbookUserByUsername(insertLogbookUser2.getUsername());
 
+
+
+
+
          // Проверка всех полей
 
         Assert.assertEquals(findLogbookUser1,insertLogbookUser1);
-//         Assert.assertEquals(findLogbookUser1.getUsername(),insertLogbookUser1.getUsername());
-//         Assert.assertEquals(findLogbookUser2.getUsername(),insertLogbookUser2.getUsername());
-//
-//         Assert.assertEquals(findLogbookUser1.getFirstname(),insertLogbookUser1.getFirstname());
-//         Assert.assertEquals(findLogbookUser2.getFirstname(),insertLogbookUser2.getFirstname());
-//
-//         Assert.assertEquals(findLogbookUser1.getLastname(),insertLogbookUser1.getLastname());
-//         Assert.assertEquals(findLogbookUser2.getLastname(),insertLogbookUser2.getLastname());
-//
-//          Assert.assertEquals(findLogbookUser1.getPassword(),insertLogbookUser1.getPassword());
-//         Assert.assertEquals(findLogbookUser2.getPassword(),insertLogbookUser2.getPassword());
-//
-//           Assert.assertEquals(findLogbookUser1.getCertificate(),insertLogbookUser1.getCertificate());
-//         Assert.assertEquals(findLogbookUser2.getCertificate(),insertLogbookUser2.getCertificate());
-//
-//          Assert.assertEquals(findLogbookUser1.getDepartmentName(),insertLogbookUser1.getDepartmentName());
-//         Assert.assertEquals(findLogbookUser2.getDepartmentName(),insertLogbookUser2.getDepartmentName());
-
-
-
 
 
          // Проверка размера листа ролей

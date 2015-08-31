@@ -3,7 +3,7 @@ package ru.matritca.jdbctemplate.domain.users;
 /**
  * Created by Vasiliy on 17.08.2015.
  */
-public class Department {
+public class Department implements Comparable<Department>{
 
    private long id;
    private String departmentName;
@@ -44,7 +44,12 @@ public class Department {
     }
 
     @Override
+    public int compareTo(Department o) {
+       return o.getDepartmentName().compareTo(this.departmentName);
+    }
+
+    @Override
     public int hashCode() {
-        return super.hashCode();
+       return departmentName.hashCode();
     }
 }
